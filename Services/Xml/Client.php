@@ -18,6 +18,8 @@ use Psr\Log\LogLevel;
 use Wk\AfterbuyApiBundle\Model\XmlApi\AbstractRequest;
 use Wk\AfterbuyApiBundle\Model\XmlApi\AbstractResponse;
 use Wk\AfterbuyApiBundle\Model\XmlApi\AfterbuyGlobal;
+use Wk\AfterbuyApiBundle\Model\XmlApi\GetShopProducts\GetShopProductsRequest;
+use Wk\AfterbuyApiBundle\Model\XmlApi\GetShopProducts\GetShopProductsResponse;
 use Wk\AfterbuyApiBundle\Model\XmlApi\GetSoldItems\Filter\AbstractFilter;
 use Wk\AfterbuyApiBundle\Model\XmlApi\GetSoldItems\GetSoldItemsRequest;
 use Wk\AfterbuyApiBundle\Model\XmlApi\GetSoldItems\GetSoldItemsResponse;
@@ -81,9 +83,13 @@ class Client implements LoggerAwareInterface
      */
     public static function getDefaultSerializer()
     {
+
+        $deserializationVisitor = new AfterbuyXmlDeserializationVisitor();
+        $deserializationVisitor->setDoctypeWhitelist(['<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">']);
+
         return SerializerBuilder::create()
             ->setSerializationVisitor('xml', new AfterbuyXmlSerializationVisitor())
-            ->setDeserializationVisitor('xml', new AfterbuyXmlDeserializationVisitor())
+            ->setDeserializationVisitor('xml', $deserializationVisitor )
             ->configureHandlers(self::getHandlerConfiguration())
             ->build();
     }
@@ -138,6 +144,24 @@ class Client implements LoggerAwareInterface
             ->setOrderDirection(intval($orderDirection));
 
         return $this->serializeAndSubmitRequest($request, GetSoldItemsResponse::class);
+    }
+
+    /**
+     * @param AbstractFilter[] $filters
+     * @param bool             $orderDirection
+     * @param int              $maxSoldItems
+     * @param int              $detailLevel
+     *
+     * @return GetShopProductsResponse|null
+     */
+    public function getShopProducts(array $filters = [], $orderDirection = false, $maxSoldItems = 250, $detailLevel = AfterbuyGlobal::DETAIL_LEVEL_PROCESS_DATA)
+    {
+        $request = (new GetShopProductsRequest($this->afterbuyGlobal))
+            ->setFilters($filters)
+            ->setDetailLevel($detailLevel)
+            ->setMaxSoldItems($maxSoldItems);
+
+        return $this->serializeAndSubmitRequest($request, GetShopProductsResponse::class);
     }
 
     /**
