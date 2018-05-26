@@ -21,12 +21,12 @@
     ],
     "require": {
         "php": "~5.4",
-        "symfony/framework-bundle": "~2.6",
         "symfony/yaml": "~2.6",
         "guzzlehttp/guzzle": ">=5.0,<7.0",
         "jms/serializer": "^1.1"
     },
     "require-dev": {
+        "symfony/framework-bundle": "~2.6",
         "matthiasnoback/symfony-dependency-injection-test": "~0.7",
         "symfony/monolog-bundle": "~2.6",
         "phpunit/phpunit": "~4.8"

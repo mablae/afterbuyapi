@@ -1,7 +1,0 @@
-parameters:
-    kernel.secret: ThisIsVerySecret!
-    locale: en
-    afterbuy_partner_id: 123
-    afterbuy_partner_password: pass
-    afterbuy_user_id: user
-    afterbuy_user_password: pass
